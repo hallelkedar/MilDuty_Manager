@@ -32,9 +32,9 @@ def find_soldier_by_id(soldier_id: int) -> dict | None:
     מחזירה None במקום לזרוק exception - מאפשרת גמישות.
     """
     for s in SOLDIERS_LIST:
-        if soldier_id in s:
+        if s.get("id") == soldier_id: 
             return s
-
+    return None
 
 def find_duty_by_name(duties: list, duty_name: str) -> dict | None:
     """
@@ -56,7 +56,10 @@ def find_duty_by_name(duties: list, duty_name: str) -> dict | None:
     הפרדה של לוגיקת החיפוש למקום אחד.
     מחזירה None במקום לזרוק exception - מאפשרת גמישות.
     """
-    pass
+    for duty in duties:
+        if duty["name"] == duty_name:
+            return duty
+    return None
 
 
 def is_valid_status(status: str) -> bool:
