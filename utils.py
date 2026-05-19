@@ -159,6 +159,6 @@ def is_valid_day(day: str) -> bool:
     בעתיד אפשר לשנות את הימים החוקיים במקום אחד.
     פונקציות validation מחזירות bool ולא זורקות exceptions.
     """
-    if day in DUTY_DAYS:
+    if day.lower() in DUTY_DAYS:
         return True
     return False
