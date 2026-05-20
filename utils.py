@@ -6,6 +6,7 @@ DUTY_DAYS = ["sunday",
     "wednesday",
     "thursday"
 ]
+MENU_OPTIONS = 7
 # ============================================================================
 # utils.py
 # אחריות: פונקציות עזר שחוזרות על עצמן
@@ -61,6 +62,10 @@ def find_duty_by_name(duties: list, duty_name: str) -> dict | None:
             return duty
     return None
 
+def is_valid_choice(choice):
+    if choice in range(1, MENU_OPTIONS+1):
+        return choice
+    return None
 
 def is_valid_status(status: str) -> bool:
     """
