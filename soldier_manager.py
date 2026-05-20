@@ -28,12 +28,13 @@ def add_soldier(soldier_id: int, name: str) -> None:
     לא מטפלת בקלט/פלט - רק בלוגיקה.
     זורקת exceptions במקרה של שגיאה במקום להחזיר False.
     """
-    if (not find_soldier_by_id(id)) or (not is_valid_name):
+    if (find_soldier_by_id(id)) or (not is_valid_name):
         raise ValueError
     
     solider_info = {
         "id": soldier_id,
         "name": name,
+        "duites": []
     }
     SOLDIERS_LIST.append(solider_info)
 
@@ -57,9 +58,9 @@ def remove_soldier(soldier_id: int) -> None:
     מבצעת בדיקת קיום ומסירה מהנתונים.
     זורקת exception במקרה שהחייל לא קיים.
     """
-    soldier_dict = find_soldier_by_id(id)
+    soldier_dict = find_soldier_by_id(soldier_id)
     if not soldier_dict:
-        raise ValueError
+        raise KeyError
     SOLDIERS_LIST.remove(soldier_dict)
 
 

@@ -28,16 +28,18 @@ def add_duty_to_soldier(soldier_id: int, duty_name: str, day: str) -> None:
     מבצעת בדיקות ומוסיפה תורנות לחייל.
     זורקת exceptions במקרה של שגיאה במקום להחזיר False.
     """
-    duty = {
-        "name": duty_name,
-        "day": day,
-    }
+    if not is_valid_day(day):
+        raise ValueError(f"Invalid day: {day}")
+        
     soldier = find_soldier_by_id(soldier_id)
     if not soldier:
-        raise KeyError
-    if soldier_has_duty(soldier, duty_name) or (not is_valid_day(day)):
-        raise ValueError
-    soldier["duties"].append(duty)
+        raise KeyError(f"Soldier ID {soldier_id} not found")
+        
+    if soldier_has_duty(soldier, duty_name):
+        raise ValueError(f"Soldier already has the duty: {duty_name}")
+   
+    duty = {"name": duty_name, "day": day}
+    soldier.setdefault("duties", []).append(duty)
 
 
 def update_duty_status(soldier_id: int, duty_name: str, new_status: str) -> None:
@@ -65,7 +67,8 @@ def update_duty_status(soldier_id: int, duty_name: str, new_status: str) -> None
     זורקת exceptions במקרה של שגיאה במקום להחזיר False.
     """
     soldier = find_soldier_by_id(soldier_id)
-    if not soldier or duty_name not in soldier["duties"]:
+    duty = find_duty_by_name(soldier["duties"], duty_name)
+    if not soldier or not duty:
         raise KeyError
     if not is_valid_status(new_status):
         raise ValueError

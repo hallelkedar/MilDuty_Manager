@@ -1,5 +1,6 @@
 from soldier_manager import add_soldier, remove_soldier, get_all_soldiers
 from duty_manager import add_duty_to_soldier, update_duty_status, get_soldier_duties
+from art import SOLDIER_ART
 """
 מערכת ניהול תורנויות חיילים
 """
@@ -9,17 +10,16 @@ from duty_manager import add_duty_to_soldier, update_duty_status, get_soldier_du
 # אחריות: תפריט ראשי, קלט מהמשתמש, ניתוב לפונקציות
 # ============================================================================
 MAIN_MENU = """
-=== מערכת לניהול תורנויות חיילים ===
-1. הוספת חייל חדש
-2. הסרת חייל מהמערכת
-3. צפייה ברשימת כל החיילים
-4. שיבוץ חייל לתורנות
-5. עדכון סטטוס תורנות
-6. צפייה בתורנויות של חייל
-7. יציאה מהמערכת
+=== Soldier Duty Management System ===
+1. Add a new soldier
+2. Remove a soldier from the system
+3. View all soldiers
+4. Assign a soldier to a duty
+5. Update duty status
+6. View a soldier's duties
+7. Exit the system
 ==================================
 """
-NUM_OF_OPTIONS = 7
 
 def show_menu() -> None:
     """
@@ -45,8 +45,9 @@ def get_user_choice() -> str:
     הפרדת קבלת קלט מהמשתמש מהלוגיקה של עיבוד הבחירה.
     מאפשר להחליף את שיטת הקלט בעתיד (למשל, GUI).
     """
-    user_choice = input(f"Enter your choice (1 - {NUM_OF_OPTIONS}): ")
+    user_choice = input(f"Enter your choice (1 - {len(MENU_OPTIONS)}): ")
     return user_choice
+        
 
 def handle_add_soldier() -> None:
     """
@@ -61,16 +62,18 @@ def handle_add_soldier() -> None:
     main.py אחראי על אינטראקציה עם המשתמש,
     soldier_manager.py אחראי על הלוגיקה.
     """
-    soldier_id = int(input("הכנס מספר אישי: "))
-    name = input("הכנס שם: ")
-    try:
-        add_soldier(soldier_id, name)
-        print("חייל נוסף בהצלחה ✓")
-    except ValueError as e:
-        print(f"""
-            ✗ שגיאה: {e}
-            !אנא הכנס מספר תקין וחדש
-            """)
+    while True:
+        try:
+            soldier_id = int(input("Enter personal ID: "))
+            name = input("Enter name: ")
+            add_soldier(soldier_id, name)
+            print(f"Soldier -{name}({soldier_id})- added successfully ✓")
+            return
+        except ValueError as e:
+            print(f"""
+                ✗ Error: {e}
+                Please enter a valid and new ID number!
+                """)
 
 def handle_remove_soldier() -> None:
     """
@@ -83,15 +86,17 @@ def handle_remove_soldier() -> None:
     למה הפונקציה קיימת:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
-    soldier_id = int(input("הכנס מספר אישי: "))
-    try:
-        remove_soldier(soldier_id)
-        print("חייל הוסר בהצלחה ✓")
-    except ValueError as e:
-        print(f"""
-            ✗ שגיאה: {e}
-            !אנא הכנס מספר תקין וקיים
-            """)
+    while True:
+        try:
+            soldier_id = int(input("Enter personal ID: "))
+            remove_soldier(soldier_id)
+            print("Soldier removed successfully ✓")
+            return
+        except ValueError as e:
+            print(f"""
+                ✗ Error: {e}
+                Please enter a valid and existing ID number!
+                """)
 
 def handle_view_soldiers() -> None:
     """
@@ -106,10 +111,11 @@ def handle_view_soldiers() -> None:
     """
     solider_list = get_all_soldiers()
     if solider_list:
-        for solider in solider_list:
+        for i, solider in enumerate(solider_list):
             print(f"""
+                  {i+1}. -
                   Name - {solider["name"]}
-                  ID Number - {solider["id"]})
+                  ID Number - {solider["id"]}
                   """)
     else:
         print("Soldiers list is empty.")
@@ -125,17 +131,19 @@ def handle_add_duty() -> None:
     למה הפונקציה קיימת:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
-    soldier_id = int(input("הכנס מספר אישי: "))
-    duty_name = input("הכנס שם תורנות: ")
-    day = input("הכנס יום: ")
-    try:
-        add_duty_to_soldier(soldier_id, duty_name, day)
-        print("תורנות נוספה בהצלחה ✓")
-    except (ValueError, KeyError) as e:
-        print(f"""
-            ✗ שגיאה: {e}
-            !אנא הכנס מספר תקין קיים, שם משימה תקין ויום אפשרי בשבוע
-            """)
+    while True:
+        try:
+            soldier_id = int(input("Enter personal ID: "))
+            duty_name = input("Enter duty name: ")
+            day = input("Enter day: ")
+            add_duty_to_soldier(soldier_id, duty_name, day)
+            print("Duty added successfully ✓")
+            return
+        except (ValueError, KeyError) as e:
+            print(f"""
+                ✗ Error: {e}
+                Please enter a valid existing ID, a correct duty name, and a valid day of the week!
+                """)
 
 
 def handle_update_duty_status() -> None:
@@ -149,17 +157,19 @@ def handle_update_duty_status() -> None:
     למה הפונקציה קיימת:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
-    soldier_id = int(input("הכנס מספר אישי: "))
-    duty_name = input("הכנס שם תורנות: ")
-    new_status = input("הכנס סטטוס תורנות: ")
-    try:
-        update_duty_status(soldier_id, duty_name, new_status)
-        print("תורנות נוספה בהצלחה ✓")
-    except (ValueError, KeyError) as e:
-        print(f"""
-            ✗ שגיאה: {e}
-            !אנא הכנס מספר תקין קיים, שם משימה תקין וסטטוס תקין
-            """)
+    while True:
+        soldier_id = int(input("Enter personal ID: "))
+        duty_name = input("Enter duty name: ")
+        new_status = input("Enter duty status(pending/completed/missed): ")
+        try:
+            update_duty_status(soldier_id, duty_name, new_status)
+            print("Duty updated successfully ✓")
+            return
+        except (ValueError, KeyError) as e:
+            print(f"""
+                ✗ Error: {e}
+                Please enter a valid existing ID, a correct duty name, and a valid status!
+                """)
 
 
 
@@ -174,22 +184,39 @@ def handle_view_soldier_duties() -> None:
     למה הפונקציה קיימת:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
-    
-    soldier_id = int(input("הכנס מספר אישי: "))
-    try:
-        soldier_duties = get_soldier_duties(soldier_id)
-        if soldier_duties:
-            for i, duty in enumerate(soldier_duties):
-                print(f"{i+1} - {duty}")
-        else:
-            print("Soldier has no duties.")
+    while True:
+        soldier_id = int(input("Enter personal ID: "))
+        try:
+            soldier_duties = get_soldier_duties(soldier_id)
+            if soldier_duties:
+                for i, duty in enumerate(soldier_duties):
+                    print(f"""{i+1} -
+                            Name: {duty["name"]}
+                            Day: {duty["day"]}
+                            Status: {duty["status"]}
+                            """)
+            else:
+                print("Soldier has no duties.")
+            return
+        
+        except KeyError as e:
+            print(f"""
+                ✗ Error: {e}
+                Please enter a valid and existing ID number!
+                """)
 
-    except KeyError as e:
-        print(f"""
-            ✗ שגיאה: {e}
-            !אנא הכנס מספר תקין קיים
-            """)
+def handle_user_exit():
+    pass
 
+MENU_OPTIONS = {
+    "1": handle_add_soldier,
+    "2": handle_remove_soldier,
+    "3": handle_view_soldiers,
+    "4": handle_add_duty,
+    "5": handle_update_duty_status,
+    "6": handle_view_soldier_duties,
+    "7": handle_user_exit,
+}
 
 def main() -> None:
     """
@@ -202,4 +229,15 @@ def main() -> None:
     למה הפונקציה קיימת:
     נקודת הכניסה לתוכנית. מנהלת את הזרימה הראשית.
     """
-    pass
+    print(SOLDIER_ART)
+    while True:
+        show_menu()
+        user_choice = get_user_choice()
+        func = MENU_OPTIONS.get(user_choice)
+        if func:
+            func()
+        else:
+            print("Enter a valid choice...")
+
+if __name__ == "__main__":
+    main()
