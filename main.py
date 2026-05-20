@@ -1,6 +1,7 @@
 from soldier_manager import add_soldier, remove_soldier, get_all_soldiers
 from duty_manager import add_duty_to_soldier, update_duty_status, get_soldier_duties
 from art import SOLDIER_ART
+from data import SOLDIERS_LIST, save_to_file
 """
 מערכת ניהול תורנויות חיילים
 """
@@ -45,7 +46,7 @@ def get_user_choice() -> str:
     הפרדת קבלת קלט מהמשתמש מהלוגיקה של עיבוד הבחירה.
     מאפשר להחליף את שיטת הקלט בעתיד (למשל, GUI).
     """
-    user_choice = input(f"Enter your choice (1 - {len(MENU_OPTIONS)}): ")
+    user_choice = input(f"Enter your choice (1 - 7): ")
     return user_choice
         
 
@@ -158,10 +159,10 @@ def handle_update_duty_status() -> None:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
     while True:
-        soldier_id = int(input("Enter personal ID: "))
-        duty_name = input("Enter duty name: ")
-        new_status = input("Enter duty status(pending/completed/missed): ")
         try:
+            soldier_id = int(input("Enter personal ID: "))
+            duty_name = input("Enter duty name: ")
+            new_status = input("Enter duty status(pending/completed/missed): ")
             update_duty_status(soldier_id, duty_name, new_status)
             print("Duty updated successfully ✓")
             return
@@ -185,8 +186,8 @@ def handle_view_soldier_duties() -> None:
     הפרדה בין UI לבין לוגיקה עסקית.
     """
     while True:
-        soldier_id = int(input("Enter personal ID: "))
         try:
+            soldier_id = int(input("Enter personal ID: "))
             soldier_duties = get_soldier_duties(soldier_id)
             if soldier_duties:
                 for i, duty in enumerate(soldier_duties):
@@ -206,7 +207,13 @@ def handle_view_soldier_duties() -> None:
                 """)
 
 def handle_user_exit():
-    pass
+    user_choice = input("Save changes?(Yes/No): ")
+    if user_choice.lower() == "yes":
+        save_to_file(SOLDIERS_LIST)
+        print("Changes saved!")
+    elif user_choice.lower() == "no":
+        print("Changes were not saved!")
+    exit()
 
 MENU_OPTIONS = {
     "1": handle_add_soldier,
